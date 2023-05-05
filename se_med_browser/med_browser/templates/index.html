@@ -1,0 +1,26 @@
+{% load static %}
+
+<html lang="pl" class="theme-dark">
+    <head>
+        <title>Wyszukiwarka leków</title>
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        {% block content %}
+            <div class="row">
+                <h1>Wyszukiwarka leków</h1>
+            </div>
+            <div class="row">
+                <form action="{% url 'index' %}" method="post" name="search">
+                    {% csrf_token %}
+                    {{ search_form.as_p }}
+                    <input type="image"  name="search" src="{% static 'lupka.png' %}" alt="szukaj">
+                </form>
+            </div>
+            {% if phrase %}
+                <p>Debug phrase: {{ phrase }}</p>
+            {% endif %}
+        {% endblock %}
+    </body>
+</html>
