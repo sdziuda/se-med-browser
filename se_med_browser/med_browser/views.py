@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django import forms
+from .models import Medicine
 
 
 class SearchForm(forms.Form):
@@ -9,13 +10,14 @@ class SearchForm(forms.Form):
 
 
 def index(request):
+    med = Medicine.objects.all()[:25]
     if request.method == 'POST':
         if 'search.x' in request.POST:  # why 'search.x'? and why not 'search'? idk tbh, search doesn't work
             form = SearchForm(request.POST)
             if form.is_valid():
                 phrase = form.cleaned_data['phrase']
-                return render(request, 'index.html', {'phrase': phrase, 'search_form': form})
+                return render(request, 'index.html', {'phrase': phrase, 'search_form': form, 'med': med})
 
     search_form = SearchForm()
-    return render(request, 'index.html', {'search_form': search_form})
+    return render(request, 'index.html', {'search_form': search_form, 'med': med})
 

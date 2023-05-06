@@ -2,3 +2,5 @@
 se_med_browser/se_med_browser/__pycache__/
 se_med_browser/med_browser/__pycache__/
 se_med_browser/med_browser/migrations/__pycache__/
+se_med_browser/med_browser/management/__pycache__/
+se_med_browser/med_browser/management/commands/__pycache__/

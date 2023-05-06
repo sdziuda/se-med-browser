@@ -21,6 +21,11 @@
             {% if phrase %}
                 <p>Debug phrase: {{ phrase }}</p>
             {% endif %}
+            {% if med %}
+                {% for m in med %}
+                    <p>{{ m }}</p>
+                {% endfor %}
+            {% endif %}
         {% endblock %}
     </body>
 </html>
