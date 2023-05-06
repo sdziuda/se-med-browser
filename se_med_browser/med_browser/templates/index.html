@@ -18,13 +18,48 @@
                     <input type="image"  name="search" src="{% static 'lupka.png' %}" alt="szukaj">
                 </form>
             </div>
-            {% if phrase %}
-                <p>Debug phrase: {{ phrase }}</p>
-            {% endif %}
-            {% if med %}
-                {% for m in med %}
-                    <p>{{ m }}</p>
-                {% endfor %}
+            {% if search %}
+                {% if med %}
+                    <table>
+                        <tr>
+                            <th>GTIN</th>
+                            <th>Nazwa</th>
+                            <th>Substancja czynna</th>
+                            <th>Postać</th>
+                            <th>Dawka</th>
+                            <th>Zawartość opakowania</th>
+                            <th>Urzędowa cena zbytu</th>
+                            <th>Zakres wskazań objętych refundacją</th>
+                            <th>Zakres wskazań pozarejestracyjnych</th>
+                            <th>Poziom dopłaty</th>
+                            <th>Dopłata świadczeniobiorcy</th>
+                        </tr>
+                        {% for m in med %}
+                            <tr>
+                                <td>{{ m.GTIN_number }}</td>
+                                <td>{{ m.name }}</td>
+                                <td>{{ m.active_substance }}</td>
+                                <td>{{ m.form }}</td>
+                                <td>{{ m.dose }}</td>
+                                <td>{{ m.package_contents }}</td>
+                                <td>{{ m.price.official_trade_price }}</td>
+                                <td>{{ m.price.indication_range }}</td>
+                                {% if m.price.off_label_indication_range == "nan" %}
+                                    <td></td>
+                                {% else %}
+                                    <td>{{ m.price.off_label_indication_range }}</td>
+                                {% endif %}
+                                <td>{{ m.price.payment_level }}</td>
+                                <td>{{ m.price.beneficiary_surcharge }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <div style="height: 10vh"></div>
+                    <div class="row">
+                        <h2>Brak wyników</h2>
+                    </div>
+                {% endif %}
             {% endif %}
         {% endblock %}
     </body>

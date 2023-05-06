@@ -7,6 +7,7 @@
     --navbar-color: #3f3f3f;
     --tab-color: #1d1d1d;
     --scroll-hover: #535353;
+    --header-color: black;
     --link-color: #2196F3;
 }
 
@@ -58,11 +59,79 @@ input[type="image"]:hover {
     box-shadow: 0 0 1vh var(--link-color);
 }
 
+table {
+    border-collapse: separate;
+    border: 0.5vh solid var(--link-color);
+    border-radius: 3vh;
+    border-spacing: 0;
+    padding: 0;
+    margin: 5vh 5vh;
+    font-size: 2vh;
+}
+
+th, td {
+    padding: 1vh 1vh;
+    text-align: center;
+    border-top: 0.5vh solid var(--link-color);
+    border-left: 0.5vh solid var(--link-color);
+    color: var(--text-color);
+}
+
+th {
+    background-color: var(--header-color);
+    border-top: none;
+}
+
+td:first-child, th:first-child {
+    border-left: none;
+}
+
+th:first-of-type {
+    border-top-left-radius: 3vh;
+}
+
+th:last-of-type {
+    border-top-right-radius: 3vh;
+}
+
+tr:last-of-type td:first-of-type {
+    border-bottom-left-radius: 3vh;
+}
+
+tr:last-of-type td:last-of-type {
+    border-bottom-right-radius: 3vh;
+}
+
+tr:nth-child(odd) {
+    background-color: var(--navbar-color);
+}
+
 .row {
     display: flex;
     flex-direction: row;
     width: 100%;
     justify-content: center;
     align-content: center;
+}
+
+::-webkit-scrollbar {
+    width: 15px;
+    height: 15px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--main-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--navbar-color);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scroll-hover);
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
 }
 
