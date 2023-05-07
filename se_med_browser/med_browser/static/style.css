@@ -59,13 +59,32 @@ input[type="image"]:hover {
     box-shadow: 0 0 1vh var(--link-color);
 }
 
+select {
+    padding: 0.5vh 1vh;
+    box-sizing: border-box;
+    border: 0.5vh solid var(--link-color);
+    border-radius: 2vh;
+    font-size: 2.5vh;
+}
+
+label {
+    font-size: 2.5vh;
+}
+
+h1 {
+    font-size: 5vh;
+    text-align: center;
+    padding: 3vh;
+}
+
 table {
     border-collapse: separate;
     border: 0.5vh solid var(--link-color);
     border-radius: 3vh;
     border-spacing: 0;
     padding: 0;
-    margin: 5vh 5vh;
+    margin-left: 5vh;
+    margin-right: 5vh;
     font-size: 2vh;
 }
 
@@ -112,6 +131,14 @@ tr:nth-child(odd) {
     width: 100%;
     justify-content: center;
     align-content: center;
+}
+
+.row-right {
+    flex: 50%;
+    padding-left: 5vh;
+    padding-right: 5vh;
+    justify-content: right;
+    display: flex;
 }
 
 ::-webkit-scrollbar {

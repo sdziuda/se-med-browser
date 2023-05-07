@@ -20,6 +20,12 @@
             </div>
             {% if search %}
                 {% if med %}
+                    <div class="row-right">
+                        <form action="{% url 'index' %}" method="post">
+                            {% csrf_token %}
+                            {{ top_form.as_p }}
+                        </form>
+                    </div>
                     <table>
                         <tr>
                             <th>GTIN</th>
