@@ -12,10 +12,11 @@
                 <h1>Wyszukiwarka leków</h1>
             </div>
             <div class="row">
-                <form action="{% url 'index' %}" method="post" name="search">
+                <form action="{% url 'index' %}" method="post">
                     {% csrf_token %}
                     {{ search_form.as_p }}
-                    <input type="image"  name="search" src="{% static 'lupka.png' %}" alt="szukaj">
+                    <input type="hidden" name="form_type" value="search">
+                    <input type="image" src="{% static 'lupka.png' %}" alt="szukaj">
                 </form>
             </div>
             {% if search %}
@@ -24,42 +25,45 @@
                         <form action="{% url 'index' %}" method="post">
                             {% csrf_token %}
                             {{ top_form.as_p }}
+                            <input type="hidden" name="form_type" value="top">
                         </form>
                     </div>
-                    <table>
-                        <tr>
-                            <th>GTIN</th>
-                            <th>Nazwa</th>
-                            <th>Substancja czynna</th>
-                            <th>Postać</th>
-                            <th>Dawka</th>
-                            <th>Zawartość opakowania</th>
-                            <th>Urzędowa cena zbytu</th>
-                            <th>Zakres wskazań objętych refundacją</th>
-                            <th>Zakres wskazań pozarejestracyjnych</th>
-                            <th>Poziom dopłaty</th>
-                            <th>Dopłata świadczeniobiorcy</th>
-                        </tr>
-                        {% for m in med %}
+                    <div style="overflow-x: auto;">
+                        <table>
                             <tr>
-                                <td>{{ m.GTIN_number }}</td>
-                                <td>{{ m.name }}</td>
-                                <td>{{ m.active_substance }}</td>
-                                <td>{{ m.form }}</td>
-                                <td>{{ m.dose }}</td>
-                                <td>{{ m.package_contents }}</td>
-                                <td>{{ m.price.official_trade_price }}</td>
-                                <td>{{ m.price.indication_range }}</td>
-                                {% if m.price.off_label_indication_range == "nan" %}
-                                    <td></td>
-                                {% else %}
-                                    <td>{{ m.price.off_label_indication_range }}</td>
-                                {% endif %}
-                                <td>{{ m.price.payment_level }}</td>
-                                <td>{{ m.price.beneficiary_surcharge }}</td>
+                                <th>GTIN</th>
+                                <th>Nazwa</th>
+                                <th>Substancja czynna</th>
+                                <th>Postać</th>
+                                <th>Dawka</th>
+                                <th>Zawartość opakowania</th>
+                                <th>Urzędowa cena zbytu</th>
+                                <th>Zakres wskazań objętych refundacją</th>
+                                <th>Zakres wskazań pozarejestracyjnych</th>
+                                <th>Poziom dopłaty</th>
+                                <th>Dopłata świadczeniobiorcy</th>
                             </tr>
-                        {% endfor %}
-                    </table>
+                            {% for m in med %}
+                                <tr>
+                                    <td><div>{{ m.GTIN_number }}</div></td>
+                                    <td><div>{{ m.name }}</div></td>
+                                    <td><div>{{ m.active_substance }}</div></td>
+                                    <td><div>{{ m.form }}</div></td>
+                                    <td><div>{{ m.dose }}</div></td>
+                                    <td><div>{{ m.package_contents }}</div></td>
+                                    <td><div>{{ m.price.official_trade_price }}</div></td>
+                                    <td><div>{{ m.price.indication_range }}</div></td>
+                                    {% if m.price.off_label_indication_range == "nan" %}
+                                        <td><div></div></td>
+                                    {% else %}
+                                        <td><div>{{ m.price.off_label_indication_range }}</div></td>
+                                    {% endif %}
+                                    <td><div>{{ m.price.payment_level }}</div></td>
+                                    <td><div>{{ m.price.beneficiary_surcharge }}</div></td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
                 {% else %}
                     <div style="height: 10vh"></div>
                     <div class="row">

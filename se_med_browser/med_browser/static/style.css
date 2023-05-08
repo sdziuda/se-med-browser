@@ -43,7 +43,7 @@ input[type="text"] {
 }
 
 input[type="image"] {
-    padding: 0;
+    padding: 0.5vh;
     box-sizing: border-box;
     border: 2px solid var(--link-color);
     border-radius: 5px;
@@ -83,8 +83,7 @@ table {
     border-radius: 3vh;
     border-spacing: 0;
     padding: 0;
-    margin-left: 5vh;
-    margin-right: 5vh;
+    margin: 2vh 5vh 5vh 5vh;
     font-size: 2vh;
 }
 
@@ -105,6 +104,10 @@ td:first-child, th:first-child {
     border-left: none;
 }
 
+table tr:first-of-type {
+    background-color: var(--main-color);
+}
+
 th:first-of-type {
     border-top-left-radius: 3vh;
 }
@@ -123,6 +126,31 @@ tr:last-of-type td:last-of-type {
 
 tr:nth-child(odd) {
     background-color: var(--navbar-color);
+}
+
+td > div {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+td > div::-webkit-scrollbar {
+    width: 2px;
+}
+
+td > div::-webkit-scrollbar-track {
+    background: var(--main-color);
+}
+
+td > div::-webkit-scrollbar-thumb {
+    background: var(--navbar-color);
+}
+
+tr:nth-child(odd) td > div::-webkit-scrollbar-track {
+    background: var(--navbar-color);
+}
+
+tr:nth-child(odd) td > div::-webkit-scrollbar-thumb {
+    background: var(--main-color);
 }
 
 .row {

@@ -21,7 +21,7 @@ class TopForm(forms.Form):
 
 def index(request):
     if request.method == 'POST':
-        if 'search.x' in request.POST:  # why 'search.x'? and why not 'search'? idk tbh, search doesn't work
+        if request.POST.get('form_type') == 'search':
             form = SearchForm(request.POST)
             if form.is_valid():
                 phrase = form.cleaned_data['phrase']
@@ -41,7 +41,7 @@ def index(request):
                 request.session['phrase'] = phrase
                 return render(request, 'index.html', {'search_form': form, 'med': med[:25], 'search': True,
                                                       'top_form': top_form})
-        elif 'top' in request.POST:
+        elif request.POST.get('form_type') == 'top':
             med = cache.get(f"se_med_browser:{request.user.id}")
             if med is None:
                 med = []
