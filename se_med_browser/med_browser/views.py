@@ -36,13 +36,13 @@ def index(request):
                 med = med.union(Medicine.objects.filter(package_contents__icontains=phrase))
                 med = med.order_by('name', 'form', 'dose', 'package_contents')
                 top_form = TopForm()
-                cache_key = f"se_med_browser:{request.user.id}"
+                cache_key = f"se_med_browser:{request.session.session_key}"
                 cache.set(cache_key, med, 60 * 60 * 24)
                 request.session['phrase'] = phrase
                 return render(request, 'index.html', {'search_form': form, 'med': med[:25], 'search': True,
                                                       'top_form': top_form})
         elif request.POST.get('form_type') == 'top':
-            med = cache.get(f"se_med_browser:{request.user.id}")
+            med = cache.get(f"se_med_browser:{request.session.session_key}")
             if med is None:
                 med = []
             phrase = request.session.get('phrase')
