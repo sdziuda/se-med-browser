@@ -18,11 +18,6 @@ class Price(models.Model):
     def __str__(self):
         return str(self.official_trade_price)
 
-    def to_dict(self):
-        return {'official_trade_price': self.official_trade_price, 'indication_range': self.indication_range,
-                'off_label_indication_range': self.off_label_indication_range, 'payment_level': self.payment_level,
-                'beneficiary_surcharge': self.beneficiary_surcharge}
-
 
 class Medicine(models.Model):
     GTIN_number = models.CharField(max_length=2000)
@@ -36,8 +31,3 @@ class Medicine(models.Model):
 
     def __str__(self):
         return self.name + ' ' + self.price.__str__() + ' ' + self.active_substance.__str__()
-
-    def to_dict(self):
-        return {'GTIN_number': self.GTIN_number, 'sheet_nr': self.sheet_nr, 'name': self.name, 'form': self.form,
-                'dose': self.dose, 'package_contents': self.package_contents,
-                'active_substance': self.active_substance.__str__(), 'price': self.price.to_dict()}
