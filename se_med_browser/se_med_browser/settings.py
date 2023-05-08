@@ -54,8 +54,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CACHE_MIDDLEWARE_KEY_PREFIX = 'se_med_browser:{session_key}'
-
 ROOT_URLCONF = 'se_med_browser.urls'
 
 TEMPLATES = [
