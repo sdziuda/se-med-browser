@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django import forms
-from django.core.cache import cache
 from .models import Medicine
 
 
@@ -36,15 +35,16 @@ def index(request):
                 med = med.union(Medicine.objects.filter(package_contents__icontains=phrase))
                 med = med.order_by('name', 'form', 'dose', 'package_contents')
                 top_form = TopForm()
-                cache.set('med', med)
-                cache.set('phrase', phrase)
+                med_list = [m.to_dict() for m in med]
+                request.session['med'] = med_list
+                request.session['phrase'] = phrase
                 return render(request, 'index.html', {'search_form': form, 'med': med[:25], 'search': True,
                                                       'top_form': top_form})
         elif 'top' in request.POST:
-            med = cache.get('med')
+            med = request.session.get('med')
             if med is None:
                 med = []
-            phrase = cache.get('phrase')
+            phrase = request.session.get('phrase')
             if phrase is None:
                 phrase = ''
             top_form = TopForm(request.POST)
