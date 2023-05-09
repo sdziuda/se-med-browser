@@ -26,15 +26,22 @@ def save_price(official_trade_price, indication_range, off_label_indication_rang
 
 def save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents, active_substance):
     medicine_obj, created = Medicine.objects.get_or_create(GTIN_number=GTIN_number,
-                                                    sheet_nr=sheet_nr,
-                                                    name=name,
-                                                    form=form,
-                                                    dose=dose,
-                                                    package_contents=package_contents,
-                                                    active_substance=active_substance,)
+                                                           sheet_nr=sheet_nr,
+                                                           name=name,
+                                                           form=form,
+                                                           dose=dose,
+                                                           package_contents=package_contents,
+                                                           active_substance=active_substance, )
     if created:
         medicine_obj.save()
     return medicine_obj
+
+
+def get_or_none(model, *args, **kwargs):
+    try:
+        return model.objects.get(*args, **kwargs)
+    except model.DoesNotExist:
+        return None
 
 
 def scraper():
@@ -65,8 +72,10 @@ def scraper():
             beneficiary_surcharge = float(rec[14].replace(',', '.'))
 
             active_substance_obj = save_active_substance(active_substance)
-            medicine_obj = save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents,
-                                         active_substance_obj)
+            medicine_obj = get_or_none(Medicine, GTIN_number=GTIN_number)
+            if not medicine_obj:
+                medicine_obj = save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents,
+                                             active_substance_obj)
             save_price(official_trade_price, indication_range, off_label_indication_range, payment_level,
                        beneficiary_surcharge, medicine_obj)
 
@@ -92,8 +101,10 @@ def scraper():
             beneficiary_surcharge = float(rec[12].replace(',', '.'))
 
             active_substance_obj = save_active_substance(active_substance)
-            medicine_obj = save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents,
-                                         active_substance_obj)
+            medicine_obj = get_or_none(Medicine, GTIN_number=GTIN_number)
+            if not medicine_obj:
+                medicine_obj = save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents,
+                                             active_substance_obj)
             save_price(official_trade_price, indication_range, off_label_indication_range, payment_level,
                        beneficiary_surcharge, medicine_obj)
 
@@ -112,6 +123,7 @@ def scraper():
                 dose = 'nie dotyczy'
             package_contents = rec[2]
             GTIN_number = rec[3]
+            medicine_obj = Medicine.objects.filter(GTIN_number=GTIN_number, sheet_nr='A1')[0]
             price = Medicine.objects.filter(GTIN_number=GTIN_number, sheet_nr='A1')[0].price_set.all()[0]
             official_trade_price = price.official_trade_price
             indication_range = price.indication_range
@@ -123,8 +135,8 @@ def scraper():
             beneficiary_surcharge = float(0.0)
 
             active_substance_obj = save_active_substance(active_substance)
-            medicine_obj = save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents,
-                                         active_substance_obj)
+            # medicine_obj = save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents,
+            #                              active_substance_obj)
             save_price(official_trade_price, indication_range, off_label_indication_range, payment_level,
                        beneficiary_surcharge, medicine_obj)
 

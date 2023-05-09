@@ -22,8 +22,12 @@ class Medicine(models.Model):
 
     def to_dict(self):
         prices = []
+        counter = 0
         for price in self.price_set.all():
-            prices.append(price.to_dict())
+            p = price.to_dict()
+            p['counter'] = counter
+            prices.append(p)
+            counter += 1
         return {
             'GTIN_number': self.GTIN_number,
             'sheet_nr': self.sheet_nr,

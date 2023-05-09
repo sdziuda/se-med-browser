@@ -51,10 +51,12 @@
                                 <td rowspan="{{ m.price_num }}"><div>{{ m.form }}</div></td>
                                 <td rowspan="{{ m.price_num }}"><div>{{ m.dose }}</div></td>
                                 <td rowspan="{{ m.price_num }}"><div>{{ m.package_contents }}</div></td>
-                                </tr>
                                 {% for price in m.prices %}
-                                    <tr>
+                                {% if price.counter != 0 %}
+                                <tr>
+                                {% endif %}
                                     <td><div>{{ price.official_trade_price }}</div></td>
+                                    <td><div>{{ price.indication_range }}</div></td>
                                     {% if price.off_label_indication_range == "nan" %}
                                         <td><div></div></td>
                                     {% else %}
@@ -62,7 +64,9 @@
                                     {% endif %}
                                     <td><div>{{ price.payment_level }}</div></td>
                                     <td><div>{{ price.beneficiary_surcharge }}</div></td>
-                                    </tr>
+                                {% if price.counter != 0 %}
+                                </tr>
+                                {% endif %}
                                 {% endfor %}
                             {% endfor %}
                         </table>
