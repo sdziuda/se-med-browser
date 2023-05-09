@@ -44,17 +44,22 @@
                                 <th>Dopłata świadczeniobiorcy</th>
                             </tr>
                             {% for m in med %}
-                                <div class="medicine">
-                                    <tr>
-                                    <td rowspan="{{ m.price_num }}"><div>{{ m.GTIN_number }}</div></td>
-                                    <td rowspan="{{ m.price_num }}"><div>{{ m.name }}</div></td>
-                                    <td rowspan="{{ m.price_num }}"><div>{{ m.active_substance }}</div></td>
-                                    <td rowspan="{{ m.price_num }}"><div>{{ m.form }}</div></td>
-                                    <td rowspan="{{ m.price_num }}"><div>{{ m.dose }}</div></td>
-                                    <td rowspan="{{ m.price_num }}"><div>{{ m.package_contents }}</div></td>
-                                    {% for price in m.prices %}
-                                        {% if price.counter != 0 %}
+                                {% if not m.id %}
+                                <tr>
+                                {% else %}
+                                <tr class="alt">
+                                {% endif %}
+                                    <td rowspan="{{ m.medicine.price_num }}" style="border-left: none"><div>{{ m.medicine.GTIN_number }}</div></td>
+                                    <td rowspan="{{ m.medicine.price_num }}"><div>{{ m.medicine.name }}</div></td>
+                                    <td rowspan="{{ m.medicine.price_num }}"><div>{{ m.medicine.active_substance }}</div></td>
+                                    <td rowspan="{{ m.medicine.price_num }}"><div>{{ m.medicine.form }}</div></td>
+                                    <td rowspan="{{ m.medicine.price_num }}"><div>{{ m.medicine.dose }}</div></td>
+                                    <td rowspan="{{ m.medicine.price_num }}"><div>{{ m.medicine.package_contents }}</div></td>
+                                    {% for price in m.medicine.prices %}
+                                        {% if price.counter != 0 and not m.id %}
                                         <tr>
+                                        {% elif price.counter != 0 and m.id %}
+                                        <tr class="alt">
                                         {% endif %}
                                             <td><div>{{ price.official_trade_price }}</div></td>
                                             <td><div>{{ price.indication_range }}</div></td>
@@ -67,7 +72,6 @@
                                             <td><div>{{ price.beneficiary_surcharge }}</div></td>
                                         </tr>
                                     {% endfor %}
-                                </div>
                             {% endfor %}
                         </table>
                     </div>

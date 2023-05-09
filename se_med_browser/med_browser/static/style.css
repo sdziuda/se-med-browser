@@ -80,7 +80,8 @@ h1 {
 table {
     border-collapse: separate;
     border: 0.5vh solid var(--link-color);
-    border-radius: 3vh;
+    border-top-left-radius: 3vh;
+    border-top-right-radius: 3vh;
     border-spacing: 0;
     padding: 0;
     margin: 2vh 5vh 5vh 5vh;
@@ -100,7 +101,7 @@ th {
     border-top: none;
 }
 
-td:first-child, th:first-child {
+th:first-child {
     border-left: none;
 }
 
@@ -114,18 +115,6 @@ th:first-of-type {
 
 th:last-of-type {
     border-top-right-radius: 3vh;
-}
-
-tr:last-of-type td:first-of-type {
-    border-bottom-left-radius: 3vh;
-}
-
-tr:last-of-type td:last-of-type {
-    border-bottom-right-radius: 3vh;
-}
-
-tr:nth-child(odd) {
-    background-color: var(--navbar-color);
 }
 
 td > div {
@@ -151,6 +140,10 @@ tr:nth-child(odd) td > div::-webkit-scrollbar-track {
 
 tr:nth-child(odd) td > div::-webkit-scrollbar-thumb {
     background: var(--main-color);
+}
+
+.alt {
+    background-color: var(--navbar-color);
 }
 
 .row {

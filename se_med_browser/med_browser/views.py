@@ -35,11 +35,10 @@ def index(request):
                 med = med.union(Medicine.objects.filter(package_contents__icontains=phrase))
                 med = med.order_by('name', 'form', 'dose', 'package_contents')
                 top_form = TopForm()
-                med_list = [m.to_dict() for m in med]
+                med_list = [{'medicine': m.to_dict(), 'id': m_id % 2} for m_id, m in enumerate(med)]
                 request.session['med'] = med_list
                 request.session['phrase'] = phrase
-                context = {'search_form': form, 'search': True, 'top_form': top_form}
-                context['med'] = med_list[:25]
+                context = {'search_form': form, 'search': True, 'top_form': top_form, 'med': med_list[:25]}
                 return render(request, 'index.html', context)
         elif request.POST.get('form_type') == 'top':
             med = request.session.get('med')
@@ -61,4 +60,3 @@ def index(request):
 
     search_form = SearchForm()
     return render(request, 'index.html', {'search_form': search_form, 'search': False})
-
