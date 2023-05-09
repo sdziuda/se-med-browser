@@ -38,8 +38,9 @@ def index(request):
                 med_list = [m.to_dict() for m in med]
                 request.session['med'] = med_list
                 request.session['phrase'] = phrase
-                return render(request, 'index.html', {'search_form': form, 'med': med[:25], 'search': True,
-                                                      'top_form': top_form})
+                context = {'search_form': form, 'search': True, 'top_form': top_form}
+                context['med'] = med_list[:25]
+                return render(request, 'index.html', context)
         elif request.POST.get('form_type') == 'top':
             med = request.session.get('med')
             if med is None:
