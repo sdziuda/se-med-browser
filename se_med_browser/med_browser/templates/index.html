@@ -44,23 +44,34 @@
                                 <th>Dopłata świadczeniobiorcy</th>
                             </tr>
                             {% for m in med %}
+                                {% if not m.id %}
                                 <tr>
-                                    <td><div>{{ m.GTIN_number }}</div></td>
-                                    <td><div>{{ m.name }}</div></td>
-                                    <td><div>{{ m.active_substance }}</div></td>
-                                    <td><div>{{ m.form }}</div></td>
-                                    <td><div>{{ m.dose }}</div></td>
-                                    <td><div>{{ m.package_contents }}</div></td>
-                                    <td><div>{{ m.price.official_trade_price }}</div></td>
-                                    <td><div>{{ m.price.indication_range }}</div></td>
-                                    {% if m.price.off_label_indication_range == "nan" %}
-                                        <td><div></div></td>
-                                    {% else %}
-                                        <td><div>{{ m.price.off_label_indication_range }}</div></td>
-                                    {% endif %}
-                                    <td><div>{{ m.price.payment_level }}</div></td>
-                                    <td><div>{{ m.price.beneficiary_surcharge }}</div></td>
-                                </tr>
+                                {% else %}
+                                <tr class="alt">
+                                {% endif %}
+                                    <td rowspan="{{ m.medicine.price_num }}" style="border-left: none"><div>{{ m.medicine.GTIN_number }}</div></td>
+                                    <td rowspan="{{ m.medicine.price_num }}"><div>{{ m.medicine.name }}</div></td>
+                                    <td rowspan="{{ m.medicine.price_num }}"><div>{{ m.medicine.active_substance }}</div></td>
+                                    <td rowspan="{{ m.medicine.price_num }}"><div>{{ m.medicine.form }}</div></td>
+                                    <td rowspan="{{ m.medicine.price_num }}"><div>{{ m.medicine.dose }}</div></td>
+                                    <td rowspan="{{ m.medicine.price_num }}"><div>{{ m.medicine.package_contents }}</div></td>
+                                    {% for price in m.medicine.prices %}
+                                        {% if price.counter != 0 and not m.id %}
+                                        <tr>
+                                        {% elif price.counter != 0 and m.id %}
+                                        <tr class="alt">
+                                        {% endif %}
+                                            <td><div>{{ price.official_trade_price }}</div></td>
+                                            <td><div>{{ price.indication_range }}</div></td>
+                                            {% if price.off_label_indication_range == "nan" %}
+                                                <td><div></div></td>
+                                            {% else %}
+                                                <td><div>{{ price.off_label_indication_range }}</div></td>
+                                            {% endif %}
+                                            <td><div>{{ price.payment_level }}</div></td>
+                                            <td><div>{{ price.beneficiary_surcharge }}</div></td>
+                                        </tr>
+                                    {% endfor %}
                             {% endfor %}
                         </table>
                     </div>

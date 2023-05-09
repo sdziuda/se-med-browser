@@ -12,29 +12,40 @@ def save_active_substance(name):
 
 
 def save_price(official_trade_price, indication_range, off_label_indication_range, payment_level,
-               beneficiary_surcharge):
+               beneficiary_surcharge, medicine):
     price_obj, created = Price.objects.get_or_create(official_trade_price=official_trade_price,
                                                      indication_range=indication_range,
                                                      off_label_indication_range=off_label_indication_range,
                                                      payment_level=payment_level,
-                                                     beneficiary_surcharge=beneficiary_surcharge)
+                                                     beneficiary_surcharge=beneficiary_surcharge,
+                                                     medicine=medicine)
     if created:
         price_obj.save()
     return price_obj
 
 
-def save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents, active_substance, price):
-    Medicine.objects.create(GTIN_number=GTIN_number,
-                            sheet_nr=sheet_nr,
-                            name=name,
-                            form=form,
-                            dose=dose,
-                            package_contents=package_contents,
-                            active_substance=active_substance,
-                            price=price)
+def save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents, active_substance):
+    medicine_obj, created = Medicine.objects.get_or_create(GTIN_number=GTIN_number,
+                                                           sheet_nr=sheet_nr,
+                                                           name=name,
+                                                           form=form,
+                                                           dose=dose,
+                                                           package_contents=package_contents,
+                                                           active_substance=active_substance, )
+    if created:
+        medicine_obj.save()
+    return medicine_obj
+
+
+def get_or_none(model, *args, **kwargs):
+    try:
+        return model.objects.get(*args, **kwargs)
+    except model.DoesNotExist:
+        return None
 
 
 def scraper():
+    print(os.getcwd() + 'management/data.xlsx')
     file = os.getcwd() + '/med_browser/management/data.xlsx'
 
     for ind in range(1, 4):
@@ -61,9 +72,12 @@ def scraper():
             beneficiary_surcharge = float(rec[14].replace(',', '.'))
 
             active_substance_obj = save_active_substance(active_substance)
-            price_obj = save_price(official_trade_price, indication_range, off_label_indication_range, payment_level,
-                                   beneficiary_surcharge)
-            save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents, active_substance_obj, price_obj)
+            medicine_obj = get_or_none(Medicine, GTIN_number=GTIN_number)
+            if not medicine_obj:
+                medicine_obj = save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents,
+                                             active_substance_obj)
+            save_price(official_trade_price, indication_range, off_label_indication_range, payment_level,
+                       beneficiary_surcharge, medicine_obj)
 
     for sheet_nr in ['B', 'C']:
         df = pd.read_excel(file, sheet_name=sheet_nr, skiprows=1, header=0, index_col=0, dtype=str)
@@ -87,9 +101,12 @@ def scraper():
             beneficiary_surcharge = float(rec[12].replace(',', '.'))
 
             active_substance_obj = save_active_substance(active_substance)
-            price_obj = save_price(official_trade_price, indication_range, off_label_indication_range, payment_level,
-                                   beneficiary_surcharge)
-            save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents, active_substance_obj, price_obj)
+            medicine_obj = get_or_none(Medicine, GTIN_number=GTIN_number)
+            if not medicine_obj:
+                medicine_obj = save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents,
+                                             active_substance_obj)
+            save_price(official_trade_price, indication_range, off_label_indication_range, payment_level,
+                       beneficiary_surcharge, medicine_obj)
 
     for sheet_nr in ['D', 'E']:
         df = pd.read_excel(file, sheet_name=sheet_nr, skiprows=1, header=0, index_col=0, dtype=str)
@@ -106,7 +123,8 @@ def scraper():
                 dose = 'nie dotyczy'
             package_contents = rec[2]
             GTIN_number = rec[3]
-            price = Medicine.objects.filter(GTIN_number=GTIN_number, sheet_nr='A1')[0].price
+            medicine_obj = Medicine.objects.filter(GTIN_number=GTIN_number, sheet_nr='A1')[0]
+            price = Medicine.objects.filter(GTIN_number=GTIN_number, sheet_nr='A1')[0].price_set.all()[0]
             official_trade_price = price.official_trade_price
             indication_range = price.indication_range
             off_label_indication_range = price.off_label_indication_range
@@ -117,9 +135,10 @@ def scraper():
             beneficiary_surcharge = float(0.0)
 
             active_substance_obj = save_active_substance(active_substance)
-            price_obj = save_price(official_trade_price, indication_range, off_label_indication_range, payment_level,
-                                   beneficiary_surcharge)
-            save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents, active_substance_obj, price_obj)
+            # medicine_obj = save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents,
+            #                              active_substance_obj)
+            save_price(official_trade_price, indication_range, off_label_indication_range, payment_level,
+                       beneficiary_surcharge, medicine_obj)
 
 
 class Command(BaseCommand):
