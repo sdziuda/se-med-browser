@@ -45,22 +45,25 @@
                             </tr>
                             {% for m in med %}
                                 <tr>
-                                    <td><div>{{ m.GTIN_number }}</div></td>
-                                    <td><div>{{ m.name }}</div></td>
-                                    <td><div>{{ m.active_substance }}</div></td>
-                                    <td><div>{{ m.form }}</div></td>
-                                    <td><div>{{ m.dose }}</div></td>
-                                    <td><div>{{ m.package_contents }}</div></td>
-                                    <td><div>{{ m.price.official_trade_price }}</div></td>
-                                    <td><div>{{ m.price.indication_range }}</div></td>
-                                    {% if m.price.off_label_indication_range == "nan" %}
+                                <td rowspan="{{ m.price_num }}"><div>{{ m.GTIN_number }}</div></td>
+                                <td rowspan="{{ m.price_num }}"><div>{{ m.name }}</div></td>
+                                <td rowspan="{{ m.price_num }}"><div>{{ m.active_substance }}</div></td>
+                                <td rowspan="{{ m.price_num }}"><div>{{ m.form }}</div></td>
+                                <td rowspan="{{ m.price_num }}"><div>{{ m.dose }}</div></td>
+                                <td rowspan="{{ m.price_num }}"><div>{{ m.package_contents }}</div></td>
+                                </tr>
+                                {% for price in m.prices %}
+                                    <tr>
+                                    <td><div>{{ price.official_trade_price }}</div></td>
+                                    {% if price.off_label_indication_range == "nan" %}
                                         <td><div></div></td>
                                     {% else %}
-                                        <td><div>{{ m.price.off_label_indication_range }}</div></td>
+                                        <td><div>{{ price.off_label_indication_range }}</div></td>
                                     {% endif %}
-                                    <td><div>{{ m.price.payment_level }}</div></td>
-                                    <td><div>{{ m.price.beneficiary_surcharge }}</div></td>
-                                </tr>
+                                    <td><div>{{ price.payment_level }}</div></td>
+                                    <td><div>{{ price.beneficiary_surcharge }}</div></td>
+                                    </tr>
+                                {% endfor %}
                             {% endfor %}
                         </table>
                     </div>
