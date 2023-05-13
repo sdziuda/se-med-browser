@@ -1,5 +1,6 @@
 {% load static %}
 
+<!DOCTYPE html>
 <html lang="pl" class="theme-dark">
     <head>
         <title>Wyszukiwarka leków</title>
@@ -12,7 +13,7 @@
                 <h1>Wyszukiwarka leków</h1>
             </div>
             <div class="row">
-                <form action="{% url 'index' %}" method="post">
+                <form action="{% url 'index' %}" method="post" onsubmit="searchSubmit()">
                     {% csrf_token %}
                     {{ search_form.as_p }}
                     <input type="hidden" name="form_type" value="search">
@@ -22,10 +23,11 @@
             {% if search %}
                 {% if med %}
                     <div class="row-right">
-                        <form action="{% url 'index' %}" method="post">
+                        <form id = "top-form" action="{% url 'index' %}" method="post" onsubmit="topSubmit()">
                             {% csrf_token %}
                             {{ top_form.as_p }}
                             <input type="hidden" name="form_type" value="top">
+                            <input id="top-phrase" type="hidden" name="phrase" value="">
                         </form>
                     </div>
                     <div style="overflow-x: auto;">
@@ -83,5 +85,17 @@
                 {% endif %}
             {% endif %}
         {% endblock %}
+    <script>
+        function searchSubmit() {
+            let phrase = document.getElementById('id_phrase').value;
+            sessionStorage.setItem('phrase', phrase);
+        }
+
+        function topSubmit() {
+            document.getElementById('top-phrase').value = sessionStorage.getItem('phrase') ?? '';
+            document.getElementById('top-form').submit();
+        }
+    </script>
+
     </body>
 </html>
