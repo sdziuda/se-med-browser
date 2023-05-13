@@ -60,7 +60,18 @@ def scraper():
             name = rec[1].split(',')[0]
             form = rec[1].split(',')[1]
             if len(rec[1].split(',')) > 2:
-                dose = rec[1].split(',')[2]
+                if len(rec[1].split(',')) > 3:
+                    print(rec[1].split(','))
+                    name_end = int(input('name end index: '))
+                    form_end = int(input('form end index: '))
+                    name = ",".join(rec[1].split(',')[0:name_end])
+                    form = ",".join(rec[1].split(',')[name_end:form_end]).lstrip()
+                    dose = ",".join(rec[1].split(',')[form_end:]).lstrip()
+                    print(name)
+                    print(form)
+                    print(dose)
+                else:
+                    dose = rec[1].split(',')[2]
             else:
                 dose = 'nie dotyczy'
             package_contents = rec[2]
@@ -89,7 +100,18 @@ def scraper():
             name = rec[1].split(',')[0]
             form = rec[1].split(',')[1]
             if len(rec[1].split(',')) > 2:
-                dose = rec[1].split(',')[2]
+                if len(rec[1].split(',')) > 3:
+                    print(rec[1].split(','))
+                    name_end = int(input('name end index: '))
+                    form_end = int(input('form end index: '))
+                    name = ",".join(rec[1].split(',')[0:name_end])
+                    form = ",".join(rec[1].split(',')[name_end:form_end]).lstrip()
+                    dose = ",".join(rec[1].split(',')[form_end:]).lstrip()
+                    print(name)
+                    print(form)
+                    print(dose)
+                else:
+                    dose = rec[1].split(',')[2]
             else:
                 dose = 'nie dotyczy'
             package_contents = rec[2]
@@ -114,14 +136,6 @@ def scraper():
         for rec in df.values:
             print(f'{sheet_nr} {i}/{len(df.values)}')
             i += 1
-            active_substance = rec[0]
-            name = rec[1].split(',')[0]
-            form = rec[1].split(',')[1]
-            if len(rec[1].split(',')) > 2:
-                dose = rec[1].split(',')[2]
-            else:
-                dose = 'nie dotyczy'
-            package_contents = rec[2]
             GTIN_number = rec[3]
             medicine_obj = Medicine.objects.filter(GTIN_number=GTIN_number, sheet_nr='A1')[0]
             price = Medicine.objects.filter(GTIN_number=GTIN_number, sheet_nr='A1')[0].price_set.all()[0]
@@ -134,9 +148,6 @@ def scraper():
                 payment_level = 'bezpłatny (ciężarna)'
             beneficiary_surcharge = float(0.0)
 
-            active_substance_obj = save_active_substance(active_substance)
-            # medicine_obj = save_medicine(GTIN_number, sheet_nr, name, form, dose, package_contents,
-            #                              active_substance_obj)
             save_price(official_trade_price, indication_range, off_label_indication_range, payment_level,
                        beneficiary_surcharge, medicine_obj)
 
