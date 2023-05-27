@@ -28,10 +28,15 @@ def index(request):
                 if phrase == '':
                     return render(request, 'index.html', {'search_form': form, 'search': True})
 
-                top_form = TopForm()
+                context = {'search_form': form, 'search': True}
                 med_list = get_med_list(phrase)
+                top = request.session.get('top') or '25'
+                if top == 'all':
+                    context['med'] = med_list
+                else:
+                    context['med'] = med_list[:int(top)]
+                context['top_form'] = TopForm(initial={'top': top})
 
-                context = {'search_form': form, 'search': True, 'top_form': top_form, 'med': med_list[:25]}
                 return render(request, 'index.html', context)
 
         elif request.POST.get('form_type') == 'top':
@@ -40,6 +45,7 @@ def index(request):
 
             if top_form.is_valid():
                 top = top_form.cleaned_data['top']
+                request.session['top'] = top
                 search_form = SearchForm(initial={'phrase': phrase})
                 context = {'search_form': search_form, 'search': True, 'top_form': top_form}
 
@@ -64,6 +70,8 @@ def get_med_list(phrase):
     med = med.union(Medicine.objects.filter(form__icontains=phrase))
     med = med.union(Medicine.objects.filter(dose__icontains=phrase))
     med = med.union(Medicine.objects.filter(package_contents__icontains=phrase))
+    med = med.union(Medicine.objects.filter(price__indication_range__icontains=phrase))
+    med = med.union(Medicine.objects.filter(price__off_label_indication_range__icontains=phrase))
     med = med.order_by('name', 'form', 'dose', 'package_contents')
 
     med_list = [{'medicine': med_dict[m.GTIN_number], 'id': m_id % 2} for m_id, m in enumerate(med)]

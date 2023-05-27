@@ -85,7 +85,7 @@ table {
     border-spacing: 0;
     padding: 0;
     margin: 2vh 5vh 5vh 5vh;
-    font-size: 2vh;
+    font-size: 0.8vw;
 }
 
 th, td {
@@ -115,31 +115,6 @@ th:first-of-type {
 
 th:last-of-type {
     border-top-right-radius: 3vh;
-}
-
-td > div {
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-td > div::-webkit-scrollbar {
-    width: 2px;
-}
-
-td > div::-webkit-scrollbar-track {
-    background: var(--main-color);
-}
-
-td > div::-webkit-scrollbar-thumb {
-    background: var(--navbar-color);
-}
-
-tr:nth-child(odd) td > div::-webkit-scrollbar-track {
-    background: var(--navbar-color);
-}
-
-tr:nth-child(odd) td > div::-webkit-scrollbar-thumb {
-    background: var(--main-color);
 }
 
 .alt {
