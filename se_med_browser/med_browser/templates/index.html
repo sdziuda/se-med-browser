@@ -19,6 +19,12 @@
                     <input type="hidden" name="form_type" value="search">
                     <input type="image" src="{% static 'lupka.png' %}" alt="szukaj">
                 </form>
+                <div style="width: 3vw"></div>
+                <form id="pdf-form" action="{% url 'index' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="pdf">
+                    <input type="image" src="{% static 'pdf.png' %}" alt="pdf">
+                </form>
             </div>
             {% if search %}
                 {% if med %}
@@ -83,17 +89,16 @@
                 {% endif %}
             {% endif %}
         {% endblock %}
-    <script>
-        function searchSubmit() {
-            let phrase = document.getElementById('id_phrase').value;
-            sessionStorage.setItem('phrase', phrase);
-        }
+        <script>
+            function searchSubmit() {
+                let phrase = document.getElementById('id_phrase').value;
+                sessionStorage.setItem('phrase', phrase);
+            }
 
-        function topSubmit() {
-            document.getElementById('top-phrase').value = sessionStorage.getItem('phrase') ?? '';
-            document.getElementById('top-form').submit();
-        }
-    </script>
-
+            function topSubmit() {
+                document.getElementById('top-phrase').value = sessionStorage.getItem('phrase') ?? '';
+                document.getElementById('top-form').submit();
+            }
+        </script>
     </body>
 </html>

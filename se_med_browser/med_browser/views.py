@@ -1,5 +1,9 @@
 from django.shortcuts import render
 from django import forms
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+
 from .models import Medicine
 from .globals import med_dict
 
@@ -28,6 +32,7 @@ def index(request):
                 if phrase == '':
                     return render(request, 'index.html', {'search_form': form, 'search': True})
 
+                request.session['phrase'] = phrase
                 context = {'search_form': form, 'search': True}
                 med_list = get_med_list(phrase)
                 top = request.session.get('top') or '25'
@@ -56,6 +61,22 @@ def index(request):
                     context['med'] = med_list[:int(top)]
                 return render(request, 'index.html', context)
 
+        elif request.POST.get('form_type') == 'pdf':
+            top = request.session.get('top') or '25'
+            phrase = request.session.get('phrase')
+            if phrase is None:
+                context = {'search_form': SearchForm(), 'search': False}
+            else:
+                if top == 'all':
+                    context = {'med': get_med_list(phrase)}
+                else:
+                    context = {'med': get_med_list(phrase)[:int(top)]}
+                context['search'] = True
+                context['search_form'] = phrase
+            context['top_form'] = TopForm(initial={'top': top})
+
+            return html_to_pdf('pdf_template.html', context)
+
     search_form = SearchForm()
     return render(request, 'index.html', {'search_form': search_form, 'search': False})
 
@@ -77,3 +98,16 @@ def get_med_list(phrase):
     med_list = [{'medicine': med_dict[m.GTIN_number], 'id': m_id % 2} for m_id, m in enumerate(med)]
 
     return med_list
+
+
+def html_to_pdf(template_src, context_dict):
+    template = get_template(template_src)
+    html = template.render(context_dict)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="wyniki_wyszukiwania.pdf"'
+    pisa_status = pisa.CreatePDF(html.encode('utf-8'), dest=response, encoding='utf-8', pagesize='A4')
+    if pisa_status.err:
+        return HttpResponse('Nie udało się wygenerować pliku PDF')
+
+    return response

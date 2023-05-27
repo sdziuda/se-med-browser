@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pl" class="theme-dark">
+<head>
+    <title>Wyszukiwarka leków</title>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: 2100px 2970px;
+            margin: 0;
+            padding: 0;
+            background-color: #2a2a2a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            color: lightgrey;
+            background-color: #2a2a2a;
+        }
+
+        form {
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-content: center;
+            gap: 20px;
+        }
+
+        p {
+            width: 900px;
+            padding: 10px 10px;
+            box-sizing: border-box;
+            border: 3px solid #2196F3;
+            border-radius: 5px;
+            font-size: 50px;
+        }
+
+        input[type="image"] {
+            padding: 3px;
+            box-sizing: border-box;
+            border: 2px solid #2196F3;
+            border-radius: 5px;
+            background-color: #2196F3;
+            color: lightgrey;
+            cursor: pointer;
+            height: 38px;
+            width: 38px;
+            align-self: center;
+        }
+
+        input[type="image"]:hover {
+            box-shadow: 0 0 5px #2196F3;
+        }
+
+        select {
+            padding: 3px 5px;
+            box-sizing: border-box;
+            border: 3px solid #2196F3;
+            border-radius: 10px;
+            font-size: 50px;
+        }
+
+        label {
+            font-size: 50px;
+        }
+
+        h1 {
+            font-size: 100px;
+            text-align: center;
+            padding: 15px;
+        }
+
+        table {
+            border-collapse: separate;
+            border: 3px solid #2196F3;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            border-spacing: 0;
+            padding: 0;
+            margin: 10px 25px 25px 25px;
+            font-size: 14px;
+            background-color: #2a2a2a;
+        }
+
+        th, td {
+            padding-top: 4px;
+            text-align: center;
+            border-top: 3px solid #2196F3;
+            border-left: 3px solid #2196F3;
+            color: lightgrey;
+        }
+
+        th {
+            background-color: black;
+            border-top: none;
+        }
+
+        th:first-child {
+            border-left: none;
+        }
+
+        table tr:first-of-type {
+            background-color: #2a2a2a;
+        }
+
+        th:first-of-type {
+            border-top-left-radius: 60px;
+        }
+
+        th:last-of-type {
+            border-top-right-radius: 60px;
+        }
+
+        .alt {
+            background-color: #3f3f3f;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            justify-content: center;
+            align-content: center;
+        }
+
+        .row-right {
+            flex: 50%;
+            padding-left: 100px;
+            padding-right: 100px;
+            justify-content: right;
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+{% block content %}
+    <div class="row">
+        <h1>Wyszukiwarka leków</h1>
+    </div>
+    <div class="row">
+        <form>
+            <p>{{ search_form }}</p>
+        </form>
+    </div>
+    {% if search %}
+        {% if med %}
+            <div class="row-right">
+                <form>
+                    {{ top_form.as_p }}
+                </form>
+            </div>
+            <table>
+                <tr>
+                    <th>GTIN</th>
+                    <th>Nazwa</th>
+                    <th>Substancja czynna</th>
+                    <th>Postać</th>
+                    <th>Dawka</th>
+                    <th>Zawartość opakowania</th>
+                    <th>Urzędowa cena zbytu</th>
+                    <th>Zakres wskazań objętych refundacją</th>
+                    <th>Zakres wskazań pozarejestracyjnych</th>
+                    <th>Poziom dopłaty</th>
+                    <th>Dopłata świadczeniobiorcy</th>
+                </tr>
+                {% for m in med %}
+                    {% if not m.id %}
+                        <tr>
+                    {% else %}
+                        <tr class="alt">
+                    {% endif %}
+                    <td rowspan="{{ m.medicine.price_num }}" style="border-left: none">
+                        <div>{{ m.medicine.GTIN_number }}</div>
+                    </td>
+                    <td rowspan="{{ m.medicine.price_num }}">
+                        <div>{{ m.medicine.name }}</div>
+                    </td>
+                    <td rowspan="{{ m.medicine.price_num }}">
+                        <div>{{ m.medicine.active_substance }}</div>
+                    </td>
+                    <td rowspan="{{ m.medicine.price_num }}">
+                        <div>{{ m.medicine.form }}</div>
+                    </td>
+                    <td rowspan="{{ m.medicine.price_num }}">
+                        <div>{{ m.medicine.dose }}</div>
+                    </td>
+                    <td rowspan="{{ m.medicine.price_num }}">
+                        <div>{{ m.medicine.package_contents }}</div>
+                    </td>
+                    <td rowspan="{{ m.medicine.price_num }}">
+                        <div>{{ m.medicine.prices.0.official_trade_price }}</div>
+                    </td>
+                    {% for price in m.medicine.prices %}
+                        {% if price.counter != 0 and not m.id %}
+                            <tr>
+                        {% elif price.counter != 0 and m.id %}
+                            <tr class="alt">
+                        {% endif %}
+                        <td>
+                            <div>{{ price.indication_range }}</div>
+                        </td>
+                        {% if price.off_label_indication_range == "nan" %}
+                            <td>
+                                <div></div>
+                            </td>
+                        {% else %}
+                            <td>
+                                <div>{{ price.off_label_indication_range }}</div>
+                            </td>
+                        {% endif %}
+                        <td>
+                            <div>{{ price.payment_level }}</div>
+                        </td>
+                        <td>
+                            <div>{{ price.beneficiary_surcharge }}</div>
+                        </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </table>
+        {% else %}
+            <div style="height: 50px"></div>
+            <div class="row">
+                <h2>Brak wyników</h2>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+</body>
+</html>
