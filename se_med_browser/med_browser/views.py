@@ -1,8 +1,11 @@
+import os
 from django.shortcuts import render
 from django import forms
 from django.http import HttpResponse
 from django.template.loader import get_template
-from xhtml2pdf import pisa
+import pdfkit
+import base64
+from django.conf import settings
 
 from .models import Medicine
 from .globals import med_dict
@@ -72,8 +75,12 @@ def index(request):
                 else:
                     context = {'med': get_med_list(phrase)[:int(top)]}
                 context['search'] = True
-                context['search_form'] = phrase
+                context['search_form'] = SearchForm(initial={'phrase': phrase})
             context['top_form'] = TopForm(initial={'top': top})
+            with open(os.path.join(settings.STATIC_ROOT, 'lupka.png'), 'rb') as f:
+                context['search_png'] = base64.b64encode(f.read())
+            with open(os.path.join(settings.STATIC_ROOT, 'pdf.png'), 'rb') as f:
+                context['pdf_png'] = base64.b64encode(f.read())
 
             return html_to_pdf('pdf_template.html', context)
 
@@ -104,10 +111,22 @@ def html_to_pdf(template_src, context_dict):
     template = get_template(template_src)
     html = template.render(context_dict)
 
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="wyniki_wyszukiwania.pdf"'
-    pisa_status = pisa.CreatePDF(html.encode('utf-8'), dest=response, encoding='utf-8', pagesize='A4')
-    if pisa_status.err:
-        return HttpResponse('Nie udało się wygenerować pliku PDF')
+    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+    options = {
+        'page-size': 'A4',
+        'margin-top': '0in',
+        'margin-right': '0in',
+        'margin-bottom': '0in',
+        'margin-left': '0in',
+        'encoding': 'UTF-8',
+        'no-outline': None,
+    }
+
+    pdfkit.from_string(html, 'out.pdf', configuration=config, options=options)
+    with open('out.pdf', 'rb') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="wyniki_wyszukiwania.pdf"'
+        pdf.close()
+    os.remove('out.pdf')
 
     return response

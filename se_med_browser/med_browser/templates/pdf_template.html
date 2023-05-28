@@ -3,14 +3,9 @@
 <head>
     <title>Wyszukiwarka leków</title>
     <meta charset="UTF-8">
+    <meta name="pdfkit-page-size" content="Legal"/>
+    <meta name="pdfkit-orientation" content="Landscape"/>
     <style>
-        @page {
-            size: 2100px 2970px;
-            margin: 0;
-            padding: 0;
-            background-color: #2a2a2a;
-        }
-
         body {
             margin: 0;
             padding: 0;
@@ -29,53 +24,56 @@
             gap: 20px;
         }
 
-        p {
-            width: 900px;
-            padding: 10px 10px;
+        input[type="text"] {
+            width: 160mm;
+            padding: 5px;
             box-sizing: border-box;
-            border: 3px solid #2196F3;
+            border: 5px solid #2196F3;
             border-radius: 5px;
-            font-size: 50px;
+            font-size: 20px;
+            float: left;
+            margin-right: 10mm;
+            margin-left: 86mm;
         }
 
         input[type="image"] {
-            padding: 3px;
+            padding: 5px;
+            margin-top: 3px;
+            margin-right: 10mm;
             box-sizing: border-box;
-            border: 2px solid #2196F3;
-            border-radius: 5px;
+            border-radius: 2px;
             background-color: #2196F3;
             color: lightgrey;
             cursor: pointer;
-            height: 38px;
-            width: 38px;
+            height: 44px;
+            width: 44px;
             align-self: center;
         }
 
-        input[type="image"]:hover {
-            box-shadow: 0 0 5px #2196F3;
-        }
-
         select {
+            margin: 0;
             padding: 3px 5px;
             box-sizing: border-box;
             border: 3px solid #2196F3;
-            border-radius: 10px;
-            font-size: 50px;
+            border-radius: 5px;
+            font-size: 20px;
+            align-self: end;
         }
 
         label {
-            font-size: 50px;
+            font-size: 20px;
         }
 
         h1 {
-            font-size: 100px;
+            font-size: 50px;
             text-align: center;
             padding: 15px;
         }
 
         table {
             border-collapse: separate;
-            border: 3px solid #2196F3;
+            border: 4px solid #2196F3;
+            border-bottom: none;
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
             border-spacing: 0;
@@ -86,10 +84,11 @@
         }
 
         th, td {
-            padding-top: 4px;
+            padding: 5px;
             text-align: center;
-            border-top: 3px solid #2196F3;
-            border-left: 3px solid #2196F3;
+            border-right: 4px solid #2196F3;
+            border-bottom: 2px solid #2196F3;
+            border-top: 2px solid #2196F3;
             color: lightgrey;
         }
 
@@ -102,16 +101,24 @@
             border-left: none;
         }
 
+        th:last-child {
+            border-right: none;
+        }
+
+        tr td:last-of-type {
+            border-right: none;
+        }
+
         table tr:first-of-type {
             background-color: #2a2a2a;
         }
 
         th:first-of-type {
-            border-top-left-radius: 60px;
+            border-top-left-radius: 15px;
         }
 
         th:last-of-type {
-            border-top-right-radius: 60px;
+            border-top-right-radius: 15px;
         }
 
         .alt {
@@ -127,11 +134,9 @@
         }
 
         .row-right {
-            flex: 50%;
-            padding-left: 100px;
-            padding-right: 100px;
-            justify-content: right;
-            display: flex;
+            padding-left: 280mm;
+            padding-right: 0;
+            margin: 0;
         }
     </style>
 </head>
@@ -142,7 +147,9 @@
     </div>
     <div class="row">
         <form>
-            <p>{{ search_form }}</p>
+            {{ search_form.as_p }}
+            <input type="image" src="data:;base64,{{ search_png.decode }}" alt="szukaj">
+            <input type="image" src="data:;base64,{{ pdf_png.decode }}" alt="generuj pdf">
         </form>
     </div>
     {% if search %}
@@ -195,7 +202,7 @@
                     </td>
                     {% for price in m.medicine.prices %}
                         {% if price.counter != 0 and not m.id %}
-                            <tr>
+                            <tr style="height: 400%">
                         {% elif price.counter != 0 and m.id %}
                             <tr class="alt">
                         {% endif %}

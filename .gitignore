@@ -5,3 +5,4 @@ se_med_browser/med_browser/migrations/__pycache__/
 se_med_browser/med_browser/management/__pycache__/
 se_med_browser/med_browser/management/commands/__pycache__/
 se_med_browser/med_browser/staticfiles/
+se_med_browser/staticfiles/
