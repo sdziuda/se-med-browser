@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 import pdfkit
 import base64
+import PyPDF2
 from django.conf import settings
 
 from .models import Medicine
@@ -82,7 +83,7 @@ def index(request):
             with open(os.path.join(settings.STATIC_ROOT, 'pdf.png'), 'rb') as f:
                 context['pdf_png'] = base64.b64encode(f.read())
 
-            return html_to_pdf('pdf_template.html', context)
+            return html_to_pdf('pdf_template.html', context, request)
 
     search_form = SearchForm()
     return render(request, 'index.html', {'search_form': search_form, 'search': False})
@@ -107,7 +108,7 @@ def get_med_list(phrase):
     return med_list
 
 
-def html_to_pdf(template_src, context_dict):
+def html_to_pdf(template_src, context_dict, request):
     template = get_template(template_src)
     html = template.render(context_dict)
 
@@ -122,11 +123,31 @@ def html_to_pdf(template_src, context_dict):
         'no-outline': None,
     }
 
-    pdfkit.from_string(html, 'out.pdf', configuration=config, options=options)
-    with open('out.pdf', 'rb') as pdf:
+    output = 'out_' + str(request.session.session_key) + '.pdf'
+    output_no_last = 'out_no_last_' + str(request.session.session_key) + '.pdf'
+    pdfkit.from_string(html, output, configuration=config, options=options)
+    remove_last_page(output, output_no_last)
+    with open(output_no_last, 'rb') as pdf:
         response = HttpResponse(pdf.read(), content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="wyniki_wyszukiwania.pdf"'
         pdf.close()
-    os.remove('out.pdf')
+    os.remove(output)
+    os.remove(output_no_last)
 
     return response
+
+
+def remove_last_page(input_path, output_path):
+    with open(input_path, 'rb') as file:
+        reader = PyPDF2.PdfReader(file)
+        total_pages = len(reader.pages)
+
+        writer = PyPDF2.PdfWriter()
+        if total_pages > 1:
+            for page in reader.pages[:total_pages-1]:
+                writer.add_page(page)
+        else:
+            writer.add_page(reader.pages[0])
+
+        with open(output_path, 'wb') as output_file:
+            writer.write(output_file)

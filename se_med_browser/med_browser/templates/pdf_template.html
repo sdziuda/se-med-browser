@@ -81,6 +81,7 @@
             margin: 10px 25px 25px 25px;
             font-size: 14px;
             background-color: #2a2a2a;
+            page-break-after: always;
         }
 
         th, td {
@@ -114,11 +115,11 @@
         }
 
         th:first-of-type {
-            border-top-left-radius: 15px;
+            border-top-left-radius: 12px;
         }
 
         th:last-of-type {
-            border-top-right-radius: 15px;
+            border-top-right-radius: 12px;
         }
 
         .alt {
@@ -134,9 +135,7 @@
         }
 
         .row-right {
-            padding-left: 280mm;
-            padding-right: 0;
-            margin: 0;
+            padding-left: 314mm;
         }
     </style>
 </head>
@@ -155,9 +154,7 @@
     {% if search %}
         {% if med %}
             <div class="row-right">
-                <form>
-                    {{ top_form.as_p }}
-                </form>
+                {{ top_form.as_p }}
             </div>
             <table>
                 <tr>
@@ -230,10 +227,12 @@
             </table>
         {% else %}
             <div style="height: 50px"></div>
-            <div class="row">
+            <div class="row" style="page-break-after: always; text-align: center">
                 <h2>Brak wyników</h2>
             </div>
         {% endif %}
+    {% else %}
+        <div style="height: 216mm"></div>
     {% endif %}
 {% endblock %}
 </body>
