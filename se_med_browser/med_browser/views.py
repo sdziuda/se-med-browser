@@ -33,10 +33,10 @@ def index(request):
             form = SearchForm(request.POST)
             if form.is_valid():
                 phrase = form.cleaned_data['phrase']
+                request.session['phrase'] = phrase
                 if phrase == '':
                     return render(request, 'index.html', {'search_form': form, 'search': True})
 
-                request.session['phrase'] = phrase
                 context = {'search_form': form, 'search': True}
                 med_list = get_med_list(phrase)
                 top = request.session.get('top') or '25'
