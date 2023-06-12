@@ -112,7 +112,7 @@ def html_to_pdf(template_src, context_dict, request):
     template = get_template(template_src)
     html = template.render(context_dict)
 
-    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
+    config = pdfkit.configuration(wkhtmltopdf='/app/bin/wkhtmltopdf')
     options = {
         'page-size': 'A4',
         'margin-top': '0in',
